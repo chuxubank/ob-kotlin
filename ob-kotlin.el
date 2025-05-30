@@ -72,15 +72,29 @@
     (sit-for 1)))
 
 (defun ob-kotlin-eval-in-repl (session body)
+  "Evaluate Kotlin BODY in SESSION and return cleaned result."
   (let ((name (format "*ob-kotlin-%s*" session)))
     (setq ob-kotlin-process-output "")
     (process-send-string name (format "%s\n\"%s\"\n" body ob-kotlin-eoe))
     (accept-process-output (get-process name) nil nil 1)
     (ob-kotlin--wait ob-kotlin-eoe)
-    (replace-regexp-in-string
-     "^>>> " ""
-     (replace-regexp-in-string
-      (format "\\(^>>> \\)?%s\n" ob-kotlin-eoe) "" ob-kotlin-process-output))))
+    (let* ((lines (split-string ob-kotlin-process-output "\n"))
+           (clean-lines
+            (seq-remove
+             (lambda (line)
+               (or (string-match-p (regexp-quote ob-kotlin-eoe) line)
+                   (string-match-p "^>>>\\s-*$" line)
+                   (string-blank-p line)))
+             lines))
+           (res-value nil)
+           (non-res-lines
+            (cl-loop for line in clean-lines
+                     unless (string-match "^res[0-9]+: .+ = \\(.*\\)$" line)
+                     collect line
+                     else do (setq res-value (match-string 1 line)))))
+      (string-join (append non-res-lines
+                           (when res-value (list res-value)))
+                   "\n"))))
 
 (provide 'ob-kotlin)
 ;;; ob-kotlin.el ends here
