@@ -1,13 +1,12 @@
 * ob-kotlin
 
-[[https://melpa.org/#/ob-kotlin][file:https://melpa.org/packages/ob-kotlin-badge.svg]]
+[[https://kotlinlang.org/docs/command-line.html#run-the-repl][https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fgithub.com%2Fchuxubank%2Fob-kotlin%2Fraw%2Fmain%2FREADME.org&search=-%20(.*)&replace=%241&logo=kotlin&label=Kotlin&color=A97CFF&.svg]]
 
 org-babel functions for kotlin evaluation
 
 tested kotlin versions:
 
-- 1.1.2-5
-- 1.2.61
+- 2.2.21
 
 ** options
 
@@ -18,23 +17,23 @@ tested kotlin versions:
 
 ** examples
 
-: #+BEGIN_SRC kotlin
-: (1..100).filter {it % 19 == 0}.reduce {a,b -> a + b}
-: #+END_SRC
-: 
-: #+RESULTS:
-: : 285
+#+BEGIN_SRC kotlin
+(1..100).filter {it % 19 == 0}.reduce {a,b -> a + b}
+#+END_SRC
 
-: #+BEGIN_SRC kotlin
-: fun fib(n: Int):Int {
-:     return when (n) {
-:            0,1 -> 1
-:            else -> fib(n - 1) + fib(n - 2)
-:     }
-: }
-: 
-: fib(19)
-: #+END_SRC
-: 
-: #+RESULTS:
-: : 6765
+#+RESULTS:
+: 285
+
+#+BEGIN_SRC kotlin
+fun fib(n: Int):Int {
+    return when (n) {
+           0,1 -> 1
+           else -> fib(n - 1) + fib(n - 2)
+    }
+}
+
+fib(19)
+#+END_SRC
+
+#+RESULTS:
+: 6765

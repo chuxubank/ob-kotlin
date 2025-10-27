@@ -1,13 +1,13 @@
-;;; ob-kotlin.el --- org-babel functions for kotlin evaluation
+;;; ob-kotlin.el --- Org Babel functions for Kotlin evaluation -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2015 ZHOU Feng
+;; Copyright (C) 2015-2025  ZHOU Feng, Misaka
 
 ;; Author: ZHOU Feng <zf.pascal@gmail.com>
-;; URL: http://github.com/zweifisch/ob-kotlin
+;; Maintainer: Misaka <chuxubank@qq.com>
+;; URL: https://github.com/chuxubank/ob-kotlin
+;; Version: 0.1.0
 ;; Keywords: org babel kotlin
-;; Version: 0.0.1
-;; Created: 12th Mar 2015
-;; Package-Requires: ((org "8"))
+;; Package-Requires: ((emacs "26.1") (org "9.0"))
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,11 +35,16 @@
 (defvar ob-kotlin-eoe "ob-kotlin-eoe")
 
 (defgroup ob-kotlin nil
-  "org-babel functions for kotlin evaluation"
+  "Org-babel functions for kotlin evaluation."
   :group 'org)
 
 (defcustom ob-kotlin:kotlinc "kotlinc"
-  "kotlin compiler"
+  "Kotlin compiler."
+  :group 'ob-kotlin
+  :type 'string)
+
+(defcustom ob-kotlin:kotlinc-options "-Xrepl"
+  "Kotlin compiler options."
   :group 'ob-kotlin
   :type 'string)
 
@@ -59,12 +64,12 @@
     (unless (and (get-process name)
                  (process-live-p (get-process name)))
       (let ((process (with-current-buffer (get-buffer-create name)
-                       (start-process name name ob-kotlin:kotlinc))))
+                       (start-process name name ob-kotlin:kotlinc ob-kotlin:kotlinc-options))))
         (sit-for 1)
         (set-process-filter process 'ob-kotlin--process-filter)
         (ob-kotlin--wait "Welcome to Kotlin")))))
 
-(defun ob-kotlin--process-filter (process output)
+(defun ob-kotlin--process-filter (_process output)
   (setq ob-kotlin-process-output (concat ob-kotlin-process-output output)))
 
 (defun ob-kotlin--wait (pattern)
